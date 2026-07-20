@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Seahorse Exhibit Kiosk</title>
+
+    <link rel="preload" href="assets/seahorse-underwater-bg-1280.jpg" as="image">
+    <link rel="stylesheet" href="styles.css?v=button-playground43">
+
+    <!-- SAFE ONLY: fish tail positioning (no layout interference) -->
+    <style>
+      .fish-button {
+        position: relative;
+        overflow: visible;
+      }
+
+      .fish-button .fish-tail-outline {
+        position: absolute;
+        right: -90px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .fish-button.fish-reverse .fish-tail-outline {
+        right: auto;
+        left: -90px;
+        transform: translateY(-50%) scaleX(-1);
+      }
+    </style>
+  </head>
+
+  <body>
+    <main id="app" class="kiosk" data-layout="1" aria-live="polite">
+
+      <!-- HOME SCREEN -->
+      <section id="homeScreen" class="screen new-title-screen is-active" data-screen="home">
+        <img class="background-art" src="assets/seahorse-underwater-bg-1280.jpg" alt="">
+        <div class="water-tint"></div>
+
+        <div class="light-rays" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="swimming-seahorse-stage" aria-hidden="true">
+          <span class="swimming-seahorse swim-friend swim-friend-two">
+            <img src="assets/cartoon-seahorse-generated.png" alt="">
+          </span>
+          <span class="swimming-seahorse swim-friend swim-friend-one">
+            <img src="assets/cartoon-seahorse-generated.png" alt="">
+          </span>
+        </div>
+
+        <button id="altStartButton" class="start-button new-title-start" type="button">
+          <span>START</span>
+        </button>
+
+        <div class="swimming-seahorse-stage swimming-seahorse-foreground" aria-hidden="true">
+          <span class="swimming-seahorse swim-main">
+            <img src="assets/cartoon-seahorse-generated.png" alt="">
+          </span>
+        </div>
+      </section>
+
+      <!-- CHALLENGE SCREEN -->
+      <section id="challengeScreen" class="screen challenge-screen" data-screen="challenge">
+        <img class="background-art" src="assets/seahorse-underwater-bg-1280.jpg" alt="">
+        <div class="water-tint challenge-tint"></div>
+
+        <button id="challengeHomeButton" class="challenge-home-button" type="button" aria-label="Home">
+          Home
+        </button>
+
+        <div class="challenge-shell">
+          <div class="challenge-hero">
+            <button id="junoButton" class="juno-sprite juno-button" type="button" aria-label="Tickle Juno">
+              <img id="junoImage" src="assets/juno.png" alt="Juno">
+            </button>
+
+            <div class="brand-lockup">
+              <img src="assets/juno-ocean-adventures-logo-user-upscaled.png" alt="Juno's Ocean Adventures">
+            </div>
+          </div>
+
+          <div class="challenge-grid" aria-label="Choose a challenge">
+            <button class="challenge-card explorer" data-mode="explorer">
+              <span class="challenge-icon">🔍</span>
+              <strong>Explorer</strong>
+              <span class="challenge-age">Ages 4–7</span>
+            </button>
+
+            <button class="challenge-card detective" data-mode="detective">
+              <span class="challenge-icon">🕵️</span>
+              <strong>Detective</strong>
+              <span class="challenge-age">Ages 8–11</span>
+            </button>
+
+            <button class="challenge-card scientist" data-mode="scientist">
+              <span class="challenge-icon">🔬</span>
+              <strong>Scientist</strong>
+              <span class="challenge-age">Ages 14–18</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLAYGROUND SCREEN -->
+      <section id="playgroundScreen" class="screen playground-screen" data-screen="playground">
+        <img class="background-art" src="assets/seahorse-underwater-bg-1280.jpg" alt="">
+        <div class="water-tint playground-tint"></div>
+
+        <button id="playgroundBackButton" class="challenge-home-button playground-back-button" type="button">
+          Back
+        </button>
+
+        <div class="playground-shell">
+          <h2>Button Playground</h2>
+
+          <div class="playground-grid">
+
+            <!-- FISH BUTTONS (UNCHANGED) -->
+            <button class="aqua-button fish-button fish-coral" type="button">
+              <i class="fish-tail-outline"></i>
+              <span>Explorer</span>
+            </button>
+
+            <button class="aqua-button fish-button fish-lime" type="button">
+              <i class="fish-tail-outline"></i>
+              <span>Detective</span>
+            </button>
+
+            <button class="aqua-button fish-button fish-moon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span>Scientist</span>
+            </button>
+
+            <button class="aqua-button fish-button fish-ribbon fish-button-tall" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Explorer</b><small>Ages 4–7</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-speckle fish-button-tall" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Detective</b><small>Ages 8–11</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-deep fish-button-tall" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Scientist</b><small>Ages 14–18</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-sunburst fish-button-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>🔍 Explorer</b><small>Ages 4–7</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-bubblegum fish-button-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>🕵️ Detective</b><small>Ages 8–11</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-reef fish-button-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>🔬 Scientist</b><small>Ages 14–18</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-sunburst fish-naked" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Explorer</b><small>Ages 4-7</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-bubblegum fish-naked" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Detective</b><small>Ages 8-11</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-reef fish-naked fish-reverse" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Scientist</b><small>Ages 14-18</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-coral fish-naked fish-naked-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>&#128269; Explorer</b><small>Ages 4-7</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-lime fish-naked fish-naked-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>&#128373; Detective</b><small>Ages 8-11</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-moon fish-naked fish-naked-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>&#128300; Scientist</b><small>Ages 14-18</small></span>
+            </button>
+
+            <button class="aqua-button creature-button clam-flat-button" type="button">
+              <span><b>Detective</b><small>Ages 8-11</small></span>
+            </button>
+
+            <button class="aqua-button creature-button oyster-button" type="button">
+              <span><b>Scientist</b><small>Ages 14-18</small></span>
+            </button>
+
+            <button class="aqua-button creature-button scallop-button" type="button">
+              <span><b>Explorer</b><small>Fan shell</small></span>
+            </button>
+
+            <button class="aqua-button creature-button pearl-shell-button" type="button">
+              <span><b>Clue Shell</b><small>Ages 8-11</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-bubblegum fish-naked fish-reverse" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>Reverse Fish</b><small>Ages 8-11</small></span>
+            </button>
+
+            <button class="aqua-button fish-button fish-reef fish-naked-icon" type="button">
+              <i class="fish-tail-outline"></i>
+              <span class="fish-label"><b>&#128300; Lab Fish</b><small>Ages 14-18</small></span>
+            </button>
+
+            <button class="aqua-button creature-button mussel-button" type="button">
+              <span><b>Deep Dive</b><small>Dark shell</small></span>
+            </button>
+
+            <button class="aqua-button creature-button cockle-button" type="button">
+              <span><b>Shell Hunt</b><small>Ridged CTA</small></span>
+            </button>
+
+            <button class="aqua-button creature-button sand-dollar-button" type="button">
+              <span><b>Detective</b><small>Sand dollar</small></span>
+            </button>
+
+            <button class="aqua-button creature-button tide-shell-button" type="button">
+              <span><b>Scientist</b><small>Tide shell</small></span>
+            </button>
+
+            <button class="aqua-button creature-button octopus-button" type="button">
+              <span><b>Octopus</b><small>Wiggly arms</small></span>
+            </button>
+
+            <button class="aqua-button creature-button jelly-dome-button" type="button">
+              <span><b>Jelly Glow</b><small>Floating bell</small></span>
+            </button>
+
+            <button class="aqua-button creature-button crab-button" type="button">
+              <span><b>Crab Clue</b><small>Pinch CTA</small></span>
+            </button>
+
+            <button class="aqua-button creature-button crab-walk-button" type="button">
+              <span><b>Crab Walk</b><small>Arms + legs</small></span>
+            </button>
+
+            <button class="aqua-button creature-button puffer-button" type="button">
+              <span><b>Puffer Pop</b><small>Round choice</small></span>
+            </button>
+
+            <button class="aqua-button creature-button squid-button" type="button">
+              <span><b>Squid Sprint</b><small>Arrow shape</small></span>
+            </button>
+
+            <button class="aqua-button silhouette-button whale-silhouette-button" type="button" aria-label="Whale Wave">
+              <svg viewBox="0 0 640 240" aria-hidden="true">
+                <path class="silhouette-fill" d="M54 118C55 76 78 58 126 56C162 55 190 72 215 94C250 122 292 119 329 90C365 62 401 40 440 45C475 50 499 73 511 111C519 137 514 165 499 189C490 203 475 205 458 194C444 184 434 169 425 150C399 181 362 204 315 212C260 222 203 210 154 184C123 168 100 155 72 154C57 153 50 139 54 118Z"/>
+                <path class="silhouette-fin" d="M185 177C163 193 140 198 118 197C124 176 141 162 169 156Z"/>
+                <path class="silhouette-fin" d="M286 198C305 220 329 229 357 226C354 202 338 185 309 175Z"/>
+                <path class="silhouette-tail" d="M498 72C532 49 570 32 605 34C594 62 575 83 545 96C575 107 594 129 605 158C570 158 532 140 498 116Z"/>
+              </svg>
+              <span><b>Whale Wave</b><small>Silhouette CTA</small></span>
+            </button>
+
+            <button class="aqua-button silhouette-button whale-silhouette-button whale-compact-button" type="button" aria-label="Blue Whale">
+              <svg viewBox="0 0 640 240" aria-hidden="true">
+                <path class="silhouette-fill" d="M58 132C58 89 81 67 129 65C164 64 191 77 214 98C252 132 303 132 346 94C380 65 415 47 450 56C487 66 507 97 511 134C514 162 502 190 480 209C464 223 447 210 430 178C403 201 368 214 321 218C266 223 213 213 166 190C133 174 104 164 77 166C62 167 54 152 58 132Z"/>
+                <path class="silhouette-fin" d="M177 181C155 199 132 205 109 205C116 181 136 165 164 158Z"/>
+                <path class="silhouette-fin" d="M285 202C304 224 329 233 357 230C354 205 337 188 309 178Z"/>
+                <path class="silhouette-tail" d="M500 58C533 30 575 18 612 26C600 55 579 78 548 92C579 105 600 131 612 162C575 166 533 147 500 120Z"/>
+              </svg>
+              <span><b>Blue Whale</b><small>Tail shape</small></span>
+            </button>
+
+            <button class="aqua-button silhouette-button dolphin-silhouette-button" type="button" aria-label="Dolphin Dash">
+              <svg viewBox="0 0 640 240" aria-hidden="true">
+                <path class="silhouette-fill" d="M42 132C93 70 179 42 279 56C319 62 352 74 380 94C407 114 432 125 465 125C503 125 545 116 598 94C587 123 564 144 527 158C558 165 583 184 601 216C552 203 512 190 480 178C431 205 370 211 304 195C254 183 217 165 183 143C142 147 94 144 42 132Z"/>
+                <path class="silhouette-fin" d="M236 66C251 31 277 12 314 9C305 47 286 72 256 84Z"/>
+                <path class="silhouette-fin" d="M210 142C209 176 222 204 249 226C264 193 260 165 237 141Z"/>
+                <path class="silhouette-nose" d="M42 132C30 137 20 137 10 132C20 126 31 126 42 132Z"/>
+              </svg>
+              <span><b>Dolphin Dash</b><small>Fast choice</small></span>
+            </button>
+
+            <button class="aqua-button silhouette-button shark-silhouette-button" type="button" aria-label="Shark Scout">
+              <svg viewBox="0 0 760 240" aria-hidden="true">
+                <path class="silhouette-fill" d="M20 120C83 73 151 62 222 86C285 108 355 102 430 76C444 48 452 27 455 9C484 22 513 48 542 87C611 84 680 94 738 119C691 149 624 162 541 158C526 191 511 215 496 230C472 214 461 191 461 162C390 170 321 163 254 141C220 160 191 177 167 192C162 173 164 156 174 142C121 149 70 142 20 120Z"/>
+                <path class="silhouette-tail" d="M20 120C-10 83 -14 43 -1 2C31 38 55 72 73 105C55 137 31 171 -1 208C-14 166 -10 128 20 120Z"/>
+                <path class="silhouette-fin" d="M348 81C376 42 406 18 439 9C437 52 427 82 409 99Z"/>
+                <path class="silhouette-fin" d="M420 159C411 190 390 211 357 223C355 192 367 169 392 154Z"/>
+                <path class="silhouette-eye" d="M693 112C701 112 706 116 708 122C701 126 694 126 688 122C689 117 691 114 693 112Z"/>
+              </svg>
+              <span><b>Shark Scout</b><small>Sharp choice</small></span>
+            </button>
+
+            <button class="aqua-button creature-button anchor-button" type="button">
+              <span><b>Anchor</b><small>Strong tab</small></span>
+            </button>
+
+            <button class="aqua-button creature-button treasure-button" type="button">
+              <span><b>Treasure</b><small>Reward style</small></span>
+            </button>
+
+            <button class="aqua-button creature-button kelp-button" type="button">
+              <span><b>Kelp Gate</b><small>Leafy CTA</small></span>
+            </button>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- GAME SCREEN -->
+      <section id="gameScreen" class="screen game-screen" data-screen="game">
+        <button id="gameBackButton" class="game-back-button" type="button" aria-label="Home">
+          Home
+        </button>
+        <div id="missionApp" class="mission-app" aria-live="polite"></div>
+      </section>
+
+    </main>
+
+    <script src="app.js?v=button-playground43"></script>
+  </body>
+</html>

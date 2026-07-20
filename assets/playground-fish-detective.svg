@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <title>Fish button Detective</title>
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6fe6a6"/>
+      <stop offset="0.55" stop-color="#4ed7e6"/>
+      <stop offset="1" stop-color="#21c9a5"/>
+    </linearGradient>
+    <linearGradient id="tail" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4ed7e6"/>
+      <stop offset="1" stop-color="#21c9a5"/>
+    </linearGradient>
+    <pattern id="stripe" width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(24)">
+      <rect width="16" height="42" fill="#ffffff" opacity=".22"/>
+    </pattern>
+  </defs>
+  <path d="M462 130 L626 24 L578 130 L626 236 Z" fill="#063b5c"/>
+  <path d="M476 130 L604 49 L566 130 L604 211 Z" fill="url(#tail)"/>
+  <path d="M28 130 C48 70 128 26 248 28 C382 30 494 70 530 130 C494 190 382 230 248 232 C128 234 48 190 28 130 Z" fill="#063b5c"/>
+  <path d="M45 130 C65 80 136 44 248 46 C370 48 470 82 506 130 C470 178 370 212 248 214 C136 216 65 180 45 130 Z" fill="url(#body)"/>
+  <path d="M45 130 C65 80 136 44 248 46 C370 48 470 82 506 130 C470 178 370 212 248 214 C136 216 65 180 45 130 Z" fill="url(#stripe)"/>
+  <circle cx="126" cy="94" r="21" fill="#063b5c"/>
+  <circle cx="120" cy="88" r="8" fill="#ffffff"/>
+  <rect x="198" y="91" width="236" height="78" rx="39" fill="#fff9e9" stroke="#063b5c" stroke-width="8"/>
+  <text x="316" y="143" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif" font-size="34" font-weight="900" fill="#063b5c">Detective</text>
+</svg>

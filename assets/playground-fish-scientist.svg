@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="260" viewBox="0 0 640 260">
+  <title>Fish button Scientist</title>
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c8b3f4"/>
+      <stop offset="0.55" stop-color="#74e8f5"/>
+      <stop offset="1" stop-color="#ffd95c"/>
+    </linearGradient>
+    <linearGradient id="tail" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd95c"/>
+      <stop offset="1" stop-color="#74e8f5"/>
+    </linearGradient>
+  </defs>
+  <path d="M462 130 L616 34 L588 130 L616 226 Z" fill="#063b5c"/>
+  <path d="M475 130 L596 58 L576 130 L596 202 Z" fill="url(#tail)"/>
+  <path d="M28 130 C40 58 112 17 238 18 C385 20 498 58 532 130 C498 202 385 240 238 242 C112 243 40 202 28 130 Z" fill="#063b5c"/>
+  <path d="M45 130 C58 72 122 35 238 36 C372 38 472 72 508 130 C472 188 372 222 238 224 C122 225 58 188 45 130 Z" fill="url(#body)"/>
+  <circle cx="404" cy="76" r="22" fill="#ffffff" opacity=".24"/>
+  <circle cx="360" cy="181" r="14" fill="#ffffff" opacity=".2"/>
+  <circle cx="124" cy="94" r="21" fill="#063b5c"/>
+  <circle cx="118" cy="88" r="8" fill="#ffffff"/>
+  <rect x="200" y="91" width="232" height="78" rx="39" fill="#fff9e9" stroke="#063b5c" stroke-width="8"/>
+  <text x="316" y="143" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif" font-size="34" font-weight="900" fill="#063b5c">Scientist</text>
+</svg>
