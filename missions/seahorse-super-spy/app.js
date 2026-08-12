@@ -9,6 +9,7 @@ const oceanAnimals = {
   seahorse: 'assets/moving-seahorse.png'
 };
 const IDLE_MS = 90000;
+const DASH_KELP_TARGET = 10;
 let idleTimer;
 let laughTimer;
 let explorerLastSpawnSide = '';
@@ -54,7 +55,7 @@ function shell(content,{mission='',step=0,total=0,home=true,extra=''}={}){
   app.innerHTML=`<section class="screen ${extra}">${home?`<header class="topbar"><button class="home" aria-label="Home" onclick="showStart()"><img src="assets/home-icon.png" alt=""></button></header>`:''}${content}</section>`;
   resetIdle();
 }
-function showStart(){shell(`<div class="title-stage"><section class="brand-hero" aria-label="Juno's Ocean Adventures"><img class="title-series-logo" src="assets/juno-logo.png" alt="Juno's Ocean Adventures"><div class="juno-greeting"><span class="greeting-text">Hi! I'm <strong>Juno!</strong></span></div><button class="juno-wrap juno-button" aria-label="Make Juno giggle" onclick="giggleJuno()"><img class="juno" src="${juno}" alt="Juno the jellyfish waving"></button></section><section class="mission-card" aria-label="Seahorse Super Spy"><img class="spy-seahorse" src="assets/masked-seahorse.png?v=3" alt="A yellow seahorse wearing a black spy mask"><div class="mission-copy"><h1>Seahorse<br>Super Spy</h1><p>Seahorses are amazing at hiding. Can you help uncover their secrets?</p><div class="mission-start"><span>Start</span><button class="play-bubble" aria-label="Start" onclick="startMission(this)"><i aria-hidden="true"></i></button></div></div></section></div>`,{home:false,extra:'title-screen'});}
+function showStart(){shell(`<div class="title-stage"><section class="brand-hero" aria-label="Juno's Ocean Adventures"><div class="title-logo-wrap"><img class="title-series-logo" src="assets/juno-ocean-adventures-seahorse-banner.png?v=2" alt="Juno's Ocean Adventures Seahorse Edition"></div><div class="juno-greeting"><span class="greeting-text">Hi! I'm <strong>Juno!</strong></span></div><button class="juno-wrap juno-button" aria-label="Make Juno giggle" onclick="giggleJuno()"><img class="juno" src="${juno}" alt="Juno the jellyfish waving"></button></section><section class="mission-card" aria-label="Seahorse Super Spy"><img class="spy-seahorse" src="assets/masked-seahorse.png?v=3" alt="A yellow seahorse wearing a black spy mask"><div class="mission-copy"><h1>Seahorse<br>Super Spy</h1><p>Seahorses are amazing at hiding. Can you help uncover their secrets?</p><div class="mission-start"><span>Start</span><button class="play-bubble" aria-label="Start" onclick="startMission(this)"><i aria-hidden="true"></i></button></div></div></section></div>`,{home:false,extra:'title-screen'});}
 function startMission(button){if(button.classList.contains('popping'))return;button.insertAdjacentHTML('beforeend','<b class="pop-drop d1"></b><b class="pop-drop d2"></b><b class="pop-drop d3"></b><b class="pop-drop d4"></b><b class="pop-drop d5"></b><b class="pop-drop d6"></b>');button.classList.add('popping');button.disabled=true;setTimeout(showSelect,560);}
 function giggleJuno(){
   const image=document.querySelector('.title-screen .juno');
@@ -223,11 +224,14 @@ function detectiveColorMatch(){
   camouflageDashState = null;
   const items = [
     ['good','Orange kelp cover','assets/orange-kelp-cover.png'], ['bad','Shark','assets/enemy-shark.png'],
-    ['good','Orange kelp cover','assets/orange-kelp-cover.png'], ['good','Orange kelp cover','assets/orange-kelp-cover.png'],
     ['bad','Shark','assets/enemy-shark.png'], ['good','Orange kelp cover','assets/orange-kelp-cover.png'],
-    ['bad','Shark','assets/enemy-shark.png'], ['good','Orange kelp cover','assets/orange-kelp-cover.png']
+    ['bad','Shark','assets/enemy-shark.png'], ['good','Orange kelp cover','assets/orange-kelp-cover.png'],
+    ['bad','Shark','assets/enemy-shark.png'], ['good','Orange kelp cover','assets/orange-kelp-cover.png'],
+    ['bad','Shark','assets/enemy-shark.png'], ['good','Orange kelp cover','assets/orange-kelp-cover.png'],
+    ['bad','Shark','assets/enemy-shark.png'], ['bad','Shark','assets/enemy-shark.png'],
+    ['good','Orange kelp cover','assets/orange-kelp-cover.png'], ['bad','Shark','assets/enemy-shark.png']
   ].map(([type,label,src],index)=>`<div class="dash-item ${type}" data-type="${type}" data-index="${index}" aria-label="${label}"><img src="${src}" alt=""><span>${label}</span></div>`).join('');
-  shell(`<div class="panel camouflage-dash-panel"><p class="question">Guide the seahorse to safe camouflage</p><div class="dash-hud"><span>Cover <strong data-dash-cover>0</strong> / 6</span><span class="dash-tip">Collect orange kelp. Avoid sharks.</span></div><div class="dash-instructions" aria-hidden="true"><span class="drag-arrows">↕</span><span>Drag the seahorse up and down</span></div><div class="dash-track" aria-label="Drag the seahorse up and down" onpointerdown="startCamouflageDash(event)" onpointermove="moveCamouflageDash(event)" onpointerup="endCamouflageDash(event)" onpointercancel="endCamouflageDash(event)"><div class="dash-rays" aria-hidden="true"></div><div class="dash-seagrass back" aria-hidden="true">${dashGrass(24)}</div><div class="dash-finish" aria-hidden="true"><span>Finish</span></div><button class="dash-seahorse" type="button" aria-label="Drag seahorse"><img src="${oceanAnimals.seahorse}" alt="Seahorse"></button>${items}<div class="dash-seagrass front" aria-hidden="true">${dashGrass(16)}</div><div class="dash-message" role="status"></div></div><div class="next-area"></div></div>`,{mission:'Detective',step:2,total:4,extra:'camouflage-dash-screen'});
+  shell(`<div class="panel camouflage-dash-panel"><p class="question">Guide the seahorse to safe camouflage</p><div class="dash-hud"><span>Cover <strong data-dash-cover>0</strong> / ${DASH_KELP_TARGET}</span><span class="dash-tip">Collect orange kelp. Avoid sharks.</span></div><div class="dash-instructions" aria-hidden="true"><span class="drag-arrows"><img src="assets/drag-up-down-icon.png" alt=""></span><span>Drag the seahorse up and down</span></div><div class="dash-track" aria-label="Drag the seahorse up and down" onpointerdown="startCamouflageDash(event)" onpointermove="moveCamouflageDash(event)" onpointerup="endCamouflageDash(event)" onpointercancel="endCamouflageDash(event)"><div class="dash-rays" aria-hidden="true"></div><div class="dash-seagrass back" aria-hidden="true">${dashGrass(24)}</div><button class="dash-seahorse" type="button" aria-label="Drag seahorse"><img src="${oceanAnimals.seahorse}" alt="Seahorse"></button>${items}<div class="dash-seagrass front" aria-hidden="true">${dashGrass(16)}</div><div class="dash-message" role="status"></div></div><div class="next-area"></div></div>`,{mission:'Detective',step:2,total:4,extra:'camouflage-dash-screen'});
   setTimeout(initCamouflageDash,0);
 }
 function dashGrass(count){return Array.from({length:count},(_,i)=>`<i style="--i:${i};--h:${46+(i%7)*7}%;--lean:${-7+(i%8)*2}deg"></i>`).join('');}
@@ -240,15 +244,14 @@ function initCamouflageDash(){
   const horse=track.querySelector('.dash-seahorse');
   const cover=document.querySelector('[data-dash-cover]');
   const message=track.querySelector('.dash-message');
-  const finish=track.querySelector('.dash-finish');
   const rect=track.getBoundingClientRect();
-  const spawnPlan={nextSpawnX:track.clientWidth-125,lastSpawnY:null};
+  const spawnPlan={nextSpawnX:track.clientWidth-150,nextGoodSpawnX:track.clientWidth-150,lastSpawnY:null,lastGoodY:null,goodYs:[]};
   const items=[...track.querySelectorAll('.dash-item')].map((el,index)=>{
     const item={el,type:el.dataset.type,index,x:0,y:0,speed:0,hit:false};
     resetCamouflageDashItem(item,rect.width,spawnPlan,index===0);
     return item;
   });
-  camouflageDashState={track,horse,cover,message,finish,items,y:rect.height*.52,last:performance.now(),score:0,speedLevel:0,hitCooldown:0,dragging:false,running:true,finishActive:false,finishX:rect.width+220,nextSpawnX:track.clientWidth-125,lastSpawnY:null};
+  camouflageDashState={track,horse,cover,message,items,y:rect.height*.52,last:performance.now(),score:0,speedLevel:0,hitCooldown:0,dragging:false,running:true,finishActive:false,nextSpawnX:track.clientWidth-150,nextGoodSpawnX:track.clientWidth-150,lastSpawnY:null,lastGoodY:null};
   setCamouflageDashY(camouflageDashState.y);
   requestAnimationFrame(updateCamouflageDash);
 }
@@ -256,36 +259,101 @@ function resetCamouflageDashItem(item,width,spawnPlan=null,quick=false){
   const track=camouflageDashState?.track||document.querySelector('.dash-track');
   const height=track?.clientHeight||420;
   const speedLevel=camouflageDashState?.speedLevel||0;
-  const spacingMin=Math.max(255,(item.type==='bad'?360:300)-speedLevel*18);
-  const spacingMax=Math.max(345,(item.type==='bad'?485:430)-speedLevel*22);
-  const plan=spawnPlan||camouflageDashState||{nextSpawnX:width+20,lastSpawnY:null};
-  const baseX=quick ? width-120 : Math.max(width+20,plan.nextSpawnX||width+20);
+  const spacingMin=Math.max(item.type==='bad'?390:470,(item.type==='bad'?520:610)-speedLevel*7);
+  const spacingMax=Math.max(item.type==='bad'?560:610,(item.type==='bad'?700:760)-speedLevel*7);
+  const plan=spawnPlan||camouflageDashState||{nextSpawnX:width+20,nextGoodSpawnX:width+20,lastSpawnY:null,lastGoodY:null};
+  const activeGoodX=camouflageDashState?.items?.filter(other=>other!==item&&other.type==='good'&&!other.hit&&other.x>-180).map(other=>other.x) || [];
+  const activeBadX=camouflageDashState?.items?.filter(other=>other!==item&&other.type==='bad'&&!other.hit&&other.x>-180).map(other=>other.x) || [];
+  const farthestGoodX=activeGoodX.length?Math.max(...activeGoodX):width+20;
+  const farthestBadX=activeBadX.length?Math.max(...activeBadX):width+20;
+  const plannedX=item.type==='good'
+    ? Math.max(plan.nextGoodSpawnX||width+20,farthestGoodX+Math.max(430,width*.32))
+    : Math.max(plan.nextSpawnX||width+20,farthestBadX+Math.max(560,width*.42));
+  const baseX=quick ? width-120 : Math.max(width+20,plannedX);
   item.x=baseX+Math.random()*34;
-  plan.nextSpawnX=item.x+spacingMin+Math.random()*(spacingMax-spacingMin);
+  if(item.type==='good'){
+    plan.nextGoodSpawnX=item.x+spacingMin+Math.random()*(spacingMax-spacingMin);
+    plan.nextSpawnX=Math.max(plan.nextSpawnX||width+20,item.x+260);
+  }else{
+    plan.nextSpawnX=item.x+spacingMin+Math.random()*(spacingMax-spacingMin);
+  }
   const minY=58;
   const maxY=Math.max(minY+80,height-150);
-  let y=minY+Math.random()*(maxY-minY);
-  if(plan.lastSpawnY!==null&&Math.abs(y-plan.lastSpawnY)<92){
-    y=(plan.lastSpawnY+(Math.random()<.5?-130:130));
-    y=Math.max(minY,Math.min(maxY,y));
+  const range=maxY-minY;
+  const activeGoodYs=camouflageDashState?.items?.filter(other=>other!==item&&other.type==='good'&&!other.hit&&other.x>-180).map(other=>other.y) || [];
+  const previousGoodYs=plan.goodYs || [];
+  const compareYs=item.type==='good'?[...activeGoodYs,...previousGoodYs].slice(-4):[plan.lastSpawnY].filter(yValue=>yValue!==null);
+  let y=minY+Math.random()*range;
+  if(compareYs.length){
+    let bestY=y;
+    let bestDistance=-1;
+    for(let attempt=0;attempt<16;attempt+=1){
+      const candidate=minY+Math.random()*range;
+      const distance=Math.min(...compareYs.map(otherY=>Math.abs(candidate-otherY)));
+      if(distance>bestDistance){
+        bestDistance=distance;
+        bestY=candidate;
+      }
+    }
+    y=bestY;
   }
   item.y=y;
   plan.lastSpawnY=y;
-  item.speed=3.45+Math.random()*1.05+(item.type==='bad' ? .55 : 0)+speedLevel*.48;
+  if(item.type==='good'){
+    plan.lastGoodY=y;
+    if(plan.goodYs)plan.goodYs.push(y);
+  }
+  item.speed=item.type==='bad'
+    ? 4.18+Math.random()*.34+speedLevel*.29
+    : 3.65+Math.random()*1.1+speedLevel*.35;
   item.hit=false;
-  item.el.classList.remove('collected','danger-hit');
+  item.el.classList.remove('collected','danger-hit','dash-flee');
   item.el.style.setProperty('--dash-x',`${item.x}px`);
   item.el.style.setProperty('--dash-y',`${item.y}px`);
   item.el.style.transform=`translate(${item.x}px,${item.y}px)`;
+}
+function keepCamouflageDashPopulated(state,trackWidth){
+  const live=state.items.filter(item=>!item.hit&&item.x>-180&&item.x<trackWidth+300).length;
+  if(live>=4)return;
+  const queued=state.items.filter(item=>!item.hit&&item.x>=trackWidth+300).sort((a,b)=>a.x-b.x).slice(0,4-live);
+  const height=state.track.clientHeight||420;
+  const minY=58;
+  const maxY=Math.max(minY+80,height-150);
+  let nextPulledX=trackWidth+145;
+  queued.forEach(item=>{
+    const sameTypeXs=state.items
+      .filter(other=>other!==item&&other.type===item.type&&!other.hit&&other.x>-180&&other.x<trackWidth+900)
+      .map(other=>other.x);
+    const sameTypeMinGap=item.type==='bad'?520:420;
+    const farthestSameType=sameTypeXs.length?Math.max(...sameTypeXs):trackWidth-220;
+    item.x=Math.max(nextPulledX,farthestSameType+sameTypeMinGap)+Math.random()*64;
+    nextPulledX=item.x+(item.type==='bad'?260:190);
+    const recentYs=state.items.filter(other=>other!==item&&!other.hit&&other.x>-180&&other.x<trackWidth+320).map(other=>other.y);
+    let y=minY+Math.random()*(maxY-minY);
+    if(recentYs.length){
+      let bestY=y;
+      let bestDistance=-1;
+      for(let attempt=0;attempt<12;attempt+=1){
+        const candidate=minY+Math.random()*(maxY-minY);
+        const distance=Math.min(...recentYs.map(otherY=>Math.abs(candidate-otherY)));
+        if(distance>bestDistance){
+          bestDistance=distance;
+          bestY=candidate;
+        }
+      }
+      y=bestY;
+    }
+    item.y=y;
+  });
 }
 function dashCollisionRect(el,type){
   const rect=el.getBoundingClientRect();
   if(type==='bad'){
     return {
-      left: rect.left+rect.width*.12,
-      right: rect.right-rect.width*.08,
-      top: rect.top+rect.height*.23,
-      bottom: rect.bottom-rect.height*.2
+      left: rect.left+rect.width*.34,
+      right: rect.right-rect.width*.32,
+      top: rect.top+rect.height*.42,
+      bottom: rect.bottom-rect.height*.38
     };
   }
   return {
@@ -337,10 +405,15 @@ function updateCamouflageDash(now){
   state.hitCooldown=Math.max(0,state.hitCooldown-dt);
   const trackWidth=state.track.clientWidth;
   const horseRect=state.horse.getBoundingClientRect();
+  keepCamouflageDashPopulated(state,trackWidth);
   state.items.forEach(item=>{
-    const speedBoost=1+(state.speedLevel*.08);
+    const speedBoost=1+(state.speedLevel*.14);
     item.x-=item.speed*speedBoost*dt;
-    if(item.x<-220)resetCamouflageDashItem(item,trackWidth);
+    if(item.x<-220){
+      state.nextSpawnX=Math.max(state.nextSpawnX||0,trackWidth+90);
+      if(item.type==='good')state.nextGoodSpawnX=Math.max(state.nextGoodSpawnX||0,trackWidth+Math.max(330,trackWidth*.28));
+      resetCamouflageDashItem(item,trackWidth);
+    }
     item.el.style.setProperty('--dash-x',`${item.x}px`);
     item.el.style.setProperty('--dash-y',`${item.y}px`);
     item.el.style.transform=`translate(${item.x}px,${item.y}px)`;
@@ -352,14 +425,18 @@ function updateCamouflageDash(now){
     item.hit=true;
     if(item.type==='good'){
       item.el.classList.add('collected');
-      state.score=Math.min(6,state.score+1);
+      state.score=Math.min(DASH_KELP_TARGET,state.score+1);
       state.speedLevel=state.score;
       state.cover.textContent=state.score;
       showDashScore('+1',item.x+item.el.offsetWidth*.5,item.y+item.el.offsetHeight*.25,'good');
       state.horse.classList.add('dash-camouflage');
       window.setTimeout(()=>state.horse?.classList.remove('dash-camouflage'),420);
-      window.setTimeout(()=>resetCamouflageDashItem(item,trackWidth),260);
-      if(state.score>=6)activateCamouflageFinish();
+      if(state.score>=DASH_KELP_TARGET){
+        state.finishActive=true;
+        window.setTimeout(finishCamouflageDash,260);
+      }else{
+        window.setTimeout(()=>resetCamouflageDashItem(item,trackWidth),260);
+      }
     }else if(!state.finishActive&&state.hitCooldown<=0){
       state.hitCooldown=45;
       item.el.classList.add('danger-hit');
@@ -372,38 +449,28 @@ function updateCamouflageDash(now){
       window.setTimeout(()=>{if(state.message)state.message.textContent='';},900);
     }
   });
-  if(state.finishActive){
-    state.finishX-=3.8*dt;
-    state.finish.style.transform=`translateX(${state.finishX}px)`;
-    const finishRect=state.finish.getBoundingClientRect();
-    if(finishRect.left<=horseRect.right&&finishRect.right>=horseRect.left)finishCamouflageDash();
-  }
   requestAnimationFrame(updateCamouflageDash);
-}
-function activateCamouflageFinish(){
-  const state=camouflageDashState;
-  if(!state||state.finishActive)return;
-  state.finishActive=true;
-  state.track.classList.add('finish-visible');
-  state.finishX=state.track.clientWidth+90;
-  state.message.textContent='Race to the finish!';
-  window.setTimeout(()=>{if(state.message)state.message.textContent='';},1200);
 }
 function finishCamouflageDash(){
   const state=camouflageDashState;
   if(!state||!state.running)return;
   state.running=false;
-  state.track.classList.add('dash-won');
-  state.score=6;
+  state.dragging=false;
+  state.track.classList.add('dash-won','dash-escape');
+  state.score=DASH_KELP_TARGET;
   state.cover.textContent=state.score;
-  state.message.innerHTML='<strong>You made it to cover!</strong><span>The seahorse used camouflage to stay hidden.</span>';
-  document.querySelector('.camouflage-dash-panel .next-area').innerHTML='<div class="win-actions"><button class="primary next" onclick="go(\'detective\',2)">Continue</button><button class="primary secondary replay" onclick="detectiveColorMatch()">Play again</button></div>';
+  state.message.innerHTML='<strong>Safe!</strong><span>The seahorse vanished into cover.</span>';
+  state.message.insertAdjacentHTML('beforeend',`<div class="win-actions"><button class="primary next" onclick="go('detective',2)">Continue →</button><button class="primary secondary replay" onclick="detectiveColorMatch()">Play again</button></div>`);
+  state.items.forEach((item,index)=>{
+    item.el.classList.add(item.type==='bad'?'dash-flee':'collected');
+    item.el.style.setProperty('--flee-delay',`${index*.035}s`);
+  });
 }
 function detectiveFact(){shell(`<div class="panel"><div class="juno-row"><img class="juno-small" src="${juno}" alt="Juno"><div class="speech">A predator might only have a split second to spot a seahorse before it disappears into the seagrass.</div></div><button class="primary" onclick="go('detective',3)">Tank challenge →</button></div>`,{mission:'Detective',step:3,total:4});}
 function detectiveTank(){questionScreen({mission:'Detective',step:4,total:4,icon:'🐠',question:'Look in the tank. What helps the seahorse blend in?',options:['Colour','Shape','Both'],correct:2,good:'Exactly! Colour and shape work together.',bad:'Good try. Look at the seahorse from nose to tail.',finish:true});}
 
 function scientistHabitat(){shell(`<div class="panel scientist-habitat"><p class="question">A seahorse is being hunted. Which habitat gives it the best chance of survival?</p><div class="option-visuals"><button class="visual-card photo-card" onclick="answer(this,false,'scientist',1,'','Look for the habitat with the best cover.')"><span class="art"><img src="assets/scientist-coral.jpg" alt="Seahorse in a bright coral reef"></span><span class="label">A. Bright coral reef</span></button><button class="visual-card photo-card" onclick="answer(this,false,'scientist',1,'','Look for the habitat with the best cover.')"><span class="art"><img src="assets/scientist-sand.jpg" alt="Seahorse on an open sandy seabed"></span><span class="label">B. Open sandy seabed</span></button><button class="visual-card photo-card" onclick="answer(this,true,'scientist',1,'Correct. Dense seagrass offers excellent camouflage.','')"><span class="art"><img src="assets/scientist-grass.jpg" alt="Seahorse hiding in dense seagrass"></span><span class="label">C. Dense seagrass meadow</span></button></div><div class="feedback"></div><div class="next-area"></div></div>`,{mission:'Scientist',step:1,total:4});}
-function scientistWhy(){shell(`<div class="panel scientist-why"><div class="juno-row"><img class="juno-small" src="${juno}" alt="Juno"><div class="speech">Seahorses rely on camouflage to avoid predators. Dense seagrass breaks up their outline and helps them blend into the environment.</div></div><p class="question">Why does dense seagrass help?</p><div class="choices"><button class="choice" onclick="answer(this,false,'scientist',2,'','Think about what makes a predator lose sight of its prey.')">More food</button><button class="choice" onclick="answer(this,true,'scientist',2,'Correct! Seagrass creates many hiding places.','')">More hiding places</button><button class="choice" onclick="answer(this,false,'scientist',2,'','Think about what makes a predator lose sight of its prey.')">Warmer water</button><button class="choice" onclick="answer(this,false,'scientist',2,'','Think about what makes a predator lose sight of its prey.')">Fewer waves</button></div><div class="feedback"></div><div class="next-area"></div></div>`,{mission:'Scientist',step:2,total:4});}
+function scientistWhy(){shell(`<div class="panel scientist-why"><div class="juno-row"><img class="juno-small" src="${juno}" alt="Juno"><div class="speech">Seahorses rely on camouflage to avoid predators. Dense seagrass breaks up their outline and helps them blend into the environment.</div></div><p class="question">Why does dense seagrass help?</p><div class="choices"><button class="choice" onclick="answer(this,false,'scientist',2,'','Think about what makes a predator lose sight of its prey.')">More food</button><button class="choice" onclick="answer(this,true,'scientist',2,'Correct! Seagrass creates many hiding places.','')">More hiding places</button><button class="choice" onclick="answer(this,false,'scientist',2,'','Think about what makes a predator lose sight of its prey.')">Warmer water</button><button class="choice" onclick="answer(this,false,'scientist',2,'','Think about what makes a predator lose sight of its prey.')">Fewer waves</button></div><div class="feedback"></div><div class="next-area"></div></div>`,{mission:'Scientist',step:2,total:4,extra:'scientist-why-screen'});}
 function scientistExplain(){shell(`<div class="panel"><div class="juno-row"><img class="juno-small" src="${juno}" alt="Juno"><div class="speech">Seahorses rely on camouflage to avoid predators. Dense seagrass breaks up their outline and helps them blend into the environment.</div></div><button class="primary" onclick="go('scientist',3)">Keep investigating &rarr;</button></div>`,{mission:'Scientist',step:3,total:5});}
 let blendDrag = null;
 let blendZ = 10;
