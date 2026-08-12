@@ -1572,6 +1572,7 @@ button {
 }
 
 .brand-lockup {
+  position: relative;
   grid-column: 1;
   grid-row: 1;
   justify-self: end;
