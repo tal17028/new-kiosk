@@ -231,7 +231,7 @@ function detectiveColorMatch(){
     ['bad','Shark','assets/enemy-shark.png'], ['bad','Shark','assets/enemy-shark.png'],
     ['good','Orange kelp cover','assets/orange-kelp-cover.png'], ['bad','Shark','assets/enemy-shark.png']
   ].map(([type,label,src],index)=>`<div class="dash-item ${type}" data-type="${type}" data-index="${index}" aria-label="${label}"><img src="${src}" alt=""><span>${label}</span></div>`).join('');
-  shell(`<div class="panel camouflage-dash-panel"><p class="question">Guide the seahorse to safe camouflage</p><div class="dash-hud"><span>Cover <strong data-dash-cover>0</strong> / ${DASH_KELP_TARGET}</span><span class="dash-tip">Collect orange kelp. Avoid sharks.</span></div><div class="dash-instructions" aria-hidden="true"><span class="drag-arrows"><img src="assets/drag-up-down-icon.png" alt=""></span><span>Drag the seahorse up and down</span></div><div class="dash-track" aria-label="Drag the seahorse up and down" onpointerdown="startCamouflageDash(event)" onpointermove="moveCamouflageDash(event)" onpointerup="endCamouflageDash(event)" onpointercancel="endCamouflageDash(event)"><div class="dash-rays" aria-hidden="true"></div><div class="dash-seagrass back" aria-hidden="true">${dashGrass(24)}</div><button class="dash-seahorse" type="button" aria-label="Drag seahorse"><img src="${oceanAnimals.seahorse}" alt="Seahorse"></button>${items}<div class="dash-seagrass front" aria-hidden="true">${dashGrass(16)}</div><div class="dash-message" role="status"></div></div><div class="next-area"></div></div>`,{mission:'Detective',step:2,total:4,extra:'camouflage-dash-screen'});
+  shell(`<div class="panel camouflage-dash-panel"><div class="dash-track" aria-label="Drag the seahorse up and down" onpointerdown="startCamouflageDash(event)" onpointermove="moveCamouflageDash(event)" onpointerup="endCamouflageDash(event)" onpointercancel="endCamouflageDash(event)"><div class="dash-rays" aria-hidden="true"></div><div class="dash-start-card"><h2 class="dash-start-title">Krazy Kelp</h2><div class="dash-rules"><div class="dash-rule good"><span>Collect 10 Kelp</span><img class="dash-rule-icon kelp-rule-icon" src="assets/orange-kelp-rule-icon.png" alt="kelp"></div><div class="dash-rule bad"><span>Avoid Sharks</span><img class="dash-rule-icon shark-rule-icon" src="assets/enemy-shark-icon.png" alt="shark"></div></div><div class="dash-instructions" aria-hidden="true"><span class="drag-arrows"><img src="assets/drag-up-down-icon.png" alt=""></span><span>Drag</span><img class="dash-drag-seahorse" src="${oceanAnimals.seahorse}" alt=""><span>Up and Down</span></div><button class="primary dash-play" onclick="playCamouflageDash(event)">Play</button></div><div class="dash-seagrass back" aria-hidden="true">${dashGrass(24)}</div><button class="dash-seahorse" type="button" aria-label="Drag seahorse"><img src="${oceanAnimals.seahorse}" alt="Seahorse"></button>${items}<div class="dash-seagrass front" aria-hidden="true">${dashGrass(16)}</div><div class="dash-message" role="status"></div></div><div class="next-area"></div></div>`,{mission:'Detective',step:2,total:4,extra:'camouflage-dash-screen'});
   setTimeout(initCamouflageDash,0);
 }
 function dashGrass(count){return Array.from({length:count},(_,i)=>`<i style="--i:${i};--h:${46+(i%7)*7}%;--lean:${-7+(i%8)*2}deg"></i>`).join('');}
@@ -245,15 +245,17 @@ function initCamouflageDash(){
   const cover=document.querySelector('[data-dash-cover]');
   const message=track.querySelector('.dash-message');
   const rect=track.getBoundingClientRect();
-  const spawnPlan={nextSpawnX:track.clientWidth-150,nextGoodSpawnX:track.clientWidth-150,lastSpawnY:null,lastGoodY:null,goodYs:[]};
+  const spawnPlan={nextSpawnX:track.clientWidth-210,nextGoodSpawnX:track.clientWidth-210,lastSpawnY:null,lastGoodY:null,goodYs:[]};
+  let firstKelpReady=false;
   const items=[...track.querySelectorAll('.dash-item')].map((el,index)=>{
     const item={el,type:el.dataset.type,index,x:0,y:0,speed:0,hit:false};
-    resetCamouflageDashItem(item,rect.width,spawnPlan,index===0);
+    const quickKelp=!firstKelpReady&&item.type==='good';
+    resetCamouflageDashItem(item,rect.width,spawnPlan,quickKelp);
+    if(quickKelp)firstKelpReady=true;
     return item;
   });
-  camouflageDashState={track,horse,cover,message,items,y:rect.height*.52,last:performance.now(),score:0,speedLevel:0,hitCooldown:0,dragging:false,running:true,finishActive:false,nextSpawnX:track.clientWidth-150,nextGoodSpawnX:track.clientWidth-150,lastSpawnY:null,lastGoodY:null};
+  camouflageDashState={track,horse,cover,message,items,y:rect.height*.52,last:performance.now(),score:0,speedLevel:0,hitCooldown:0,dragging:false,running:false,finishActive:false,nextSpawnX:track.clientWidth-210,nextGoodSpawnX:track.clientWidth-210,lastSpawnY:null,lastGoodY:null};
   setCamouflageDashY(camouflageDashState.y);
-  requestAnimationFrame(updateCamouflageDash);
 }
 function resetCamouflageDashItem(item,width,spawnPlan=null,quick=false){
   const track=camouflageDashState?.track||document.querySelector('.dash-track');
@@ -269,7 +271,7 @@ function resetCamouflageDashItem(item,width,spawnPlan=null,quick=false){
   const plannedX=item.type==='good'
     ? Math.max(plan.nextGoodSpawnX||width+20,farthestGoodX+Math.max(430,width*.32))
     : Math.max(plan.nextSpawnX||width+20,farthestBadX+Math.max(560,width*.42));
-  const baseX=quick ? width-120 : Math.max(width+20,plannedX);
+  const baseX=quick ? width-310 : Math.max(width+60,plannedX);
   item.x=baseX+Math.random()*34;
   if(item.type==='good'){
     plan.nextGoodSpawnX=item.x+spacingMin+Math.random()*(spacingMax-spacingMin);
@@ -278,7 +280,8 @@ function resetCamouflageDashItem(item,width,spawnPlan=null,quick=false){
     plan.nextSpawnX=item.x+spacingMin+Math.random()*(spacingMax-spacingMin);
   }
   const minY=58;
-  const maxY=Math.max(minY+80,height-150);
+  const bottomClearance=item.type==='good'?240:150;
+  const maxY=Math.max(minY+80,height-bottomClearance);
   const range=maxY-minY;
   const activeGoodYs=camouflageDashState?.items?.filter(other=>other!==item&&other.type==='good'&&!other.hit&&other.x>-180).map(other=>other.y) || [];
   const previousGoodYs=plan.goodYs || [];
@@ -304,8 +307,8 @@ function resetCamouflageDashItem(item,width,spawnPlan=null,quick=false){
     if(plan.goodYs)plan.goodYs.push(y);
   }
   item.speed=item.type==='bad'
-    ? 4.18+Math.random()*.34+speedLevel*.29
-    : 3.65+Math.random()*1.1+speedLevel*.35;
+    ? 6.05+Math.random()*.48+speedLevel*.42
+    : 5.35+Math.random()*1.32+speedLevel*.48;
   item.hit=false;
   item.el.classList.remove('collected','danger-hit','dash-flee');
   item.el.style.setProperty('--dash-x',`${item.x}px`);
@@ -318,9 +321,9 @@ function keepCamouflageDashPopulated(state,trackWidth){
   const queued=state.items.filter(item=>!item.hit&&item.x>=trackWidth+300).sort((a,b)=>a.x-b.x).slice(0,4-live);
   const height=state.track.clientHeight||420;
   const minY=58;
-  const maxY=Math.max(minY+80,height-150);
   let nextPulledX=trackWidth+145;
   queued.forEach(item=>{
+    const maxY=Math.max(minY+80,height-(item.type==='good'?240:150));
     const sameTypeXs=state.items
       .filter(other=>other!==item&&other.type===item.type&&!other.hit&&other.x>-180&&other.x<trackWidth+900)
       .map(other=>other.x);
@@ -350,10 +353,10 @@ function dashCollisionRect(el,type){
   const rect=el.getBoundingClientRect();
   if(type==='bad'){
     return {
-      left: rect.left+rect.width*.34,
-      right: rect.right-rect.width*.32,
-      top: rect.top+rect.height*.42,
-      bottom: rect.bottom-rect.height*.38
+      left: rect.left+rect.width*.36,
+      right: rect.right-rect.width*.34,
+      top: rect.top+rect.height*.44,
+      bottom: rect.bottom-rect.height*.4
     };
   }
   return {
@@ -374,11 +377,20 @@ function showDashScore(text,x,y,type){
   state.track.appendChild(tag);
   tag.addEventListener('animationend',()=>tag.remove(),{once:true});
 }
+function playCamouflageDash(event){
+  event?.stopPropagation();
+  const state=camouflageDashState;
+  if(!state||state.running)return;
+  state.track.classList.add('dash-started');
+  state.running=true;
+  state.last=performance.now();
+  requestAnimationFrame(updateCamouflageDash);
+}
 function setCamouflageDashY(y){
   const state=camouflageDashState;
   if(!state)return;
   const min=54;
-  const max=state.track.clientHeight-68;
+  const max=state.track.clientHeight-90;
   state.y=Math.max(min,Math.min(max,y));
   state.horse.style.top=`${state.y}px`;
 }
@@ -407,11 +419,11 @@ function updateCamouflageDash(now){
   const horseRect=state.horse.getBoundingClientRect();
   keepCamouflageDashPopulated(state,trackWidth);
   state.items.forEach(item=>{
-    const speedBoost=1+(state.speedLevel*.14);
+    const speedBoost=1+(state.speedLevel*.16);
     item.x-=item.speed*speedBoost*dt;
     if(item.x<-220){
-      state.nextSpawnX=Math.max(state.nextSpawnX||0,trackWidth+90);
-      if(item.type==='good')state.nextGoodSpawnX=Math.max(state.nextGoodSpawnX||0,trackWidth+Math.max(330,trackWidth*.28));
+      state.nextSpawnX=Math.max(state.nextSpawnX||0,trackWidth+150);
+      if(item.type==='good')state.nextGoodSpawnX=Math.max(state.nextGoodSpawnX||0,trackWidth+Math.max(390,trackWidth*.3));
       resetCamouflageDashItem(item,trackWidth);
     }
     item.el.style.setProperty('--dash-x',`${item.x}px`);
@@ -419,7 +431,7 @@ function updateCamouflageDash(now){
     item.el.style.transform=`translate(${item.x}px,${item.y}px)`;
     if(item.hit)return;
     const itemRect=dashCollisionRect(item.el,item.type);
-    const horseHit={left:horseRect.left+horseRect.width*.28,right:horseRect.right-horseRect.width*.24,top:horseRect.top+horseRect.height*.1,bottom:horseRect.bottom-horseRect.height*.1};
+    const horseHit={left:horseRect.left+horseRect.width*.3,right:horseRect.right-horseRect.width*.26,top:horseRect.top+horseRect.height*.12,bottom:horseRect.bottom-horseRect.height*.12};
     const overlap=!(horseHit.right<itemRect.left||horseHit.left>itemRect.right||horseHit.bottom<itemRect.top||horseHit.top>itemRect.bottom);
     if(!overlap)return;
     item.hit=true;
@@ -427,8 +439,8 @@ function updateCamouflageDash(now){
       item.el.classList.add('collected');
       state.score=Math.min(DASH_KELP_TARGET,state.score+1);
       state.speedLevel=state.score;
-      state.cover.textContent=state.score;
-      showDashScore('+1',item.x+item.el.offsetWidth*.5,item.y+item.el.offsetHeight*.25,'good');
+      if(state.cover)state.cover.textContent=state.score;
+      showDashScore(`${state.score} / ${DASH_KELP_TARGET}`,item.x+item.el.offsetWidth*.5,item.y+item.el.offsetHeight*.25,'good');
       state.horse.classList.add('dash-camouflage');
       window.setTimeout(()=>state.horse?.classList.remove('dash-camouflage'),420);
       if(state.score>=DASH_KELP_TARGET){
@@ -441,12 +453,10 @@ function updateCamouflageDash(now){
       state.hitCooldown=45;
       item.el.classList.add('danger-hit');
       state.horse.classList.add('dash-bumped');
-      state.message.textContent='Hide in cover!';
       state.score=Math.max(0,state.score-1);
-      state.cover.textContent=state.score;
-      showDashScore('-1',item.x+item.el.offsetWidth*.5,item.y+item.el.offsetHeight*.25,'bad');
+      if(state.cover)state.cover.textContent=state.score;
+      showDashScore(`${state.score} / ${DASH_KELP_TARGET}`,item.x+item.el.offsetWidth*.5,item.y+item.el.offsetHeight*.25,'bad');
       window.setTimeout(()=>state.horse?.classList.remove('dash-bumped'),360);
-      window.setTimeout(()=>{if(state.message)state.message.textContent='';},900);
     }
   });
   requestAnimationFrame(updateCamouflageDash);
@@ -458,7 +468,7 @@ function finishCamouflageDash(){
   state.dragging=false;
   state.track.classList.add('dash-won','dash-escape');
   state.score=DASH_KELP_TARGET;
-  state.cover.textContent=state.score;
+  if(state.cover)state.cover.textContent=state.score;
   state.message.innerHTML='<strong>Safe!</strong><span>The seahorse vanished into cover.</span>';
   state.message.insertAdjacentHTML('beforeend',`<div class="win-actions"><button class="primary next" onclick="go('detective',2)">Continue →</button><button class="primary secondary replay" onclick="detectiveColorMatch()">Play again</button></div>`);
   state.items.forEach((item,index)=>{
